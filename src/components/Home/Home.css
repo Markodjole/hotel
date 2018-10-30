@@ -1,0 +1,13 @@
+
+.allStories {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+.comments {
+    cursor: pointer;
+}
+.loader {
+    margin: auto;
+    margin-top: 100px;
+}

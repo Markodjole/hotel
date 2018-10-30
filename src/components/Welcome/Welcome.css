@@ -1,0 +1,30 @@
+.container {
+    display: flex
+}
+.welcome {
+    
+    display: flex;
+    width: 80%;
+    height: 300px;
+    margin: auto;
+    margin-top: 200px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: white ;
+    flex-direction: column;
+}
+.welcome h3 {
+    margin: auto
+}
+.welcome div {
+    margin: auto
+}
+ button {
+    color: black;
+    width: 100px;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 3px;
+    margin: 10px;
+    background-color: white
+} 

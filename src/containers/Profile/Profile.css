@@ -1,0 +1,15 @@
+.container {
+    display: flex
+}
+.welcomeProfile {
+    display: flex;
+    width: 80%;
+    margin: auto;
+    height: 300px;
+    margin-top: 200px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: white ;
+    flex-direction: column;
+    justify-content: space-between;
+}
