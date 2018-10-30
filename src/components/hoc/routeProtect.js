@@ -5,7 +5,6 @@ const routeProtect = (WrappedComponent) => {
   class HOC extends Component {
 
     componentDidMount(){
-      console.log(this.props.user)
       if(!this.props.user){
         this.props.history.push('/login');
       }

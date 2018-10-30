@@ -24,7 +24,7 @@ class Auth extends Component {
             label={field.placeholder}
         />
         )
-        if(!this.props.formState.isLoginPage){
+        if(!this.props.formState.isLoginPage && field.id !== 'oldPassword'){
             return input
         } 
        return field.id === 'email' || field.id === 'password' ? input : null

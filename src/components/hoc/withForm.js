@@ -45,11 +45,21 @@ const withForm = (WrappedComponent) => {
                 method: 'repeatPasswordInputChange',
                 error: 'Repeated password and password are not the same'
 
-            }
+            },
+            oldPassword: {
+                id: 'oldPassword',
+                value: '',
+                valid: false,
+                placeholder: 'Old password',
+                method: 'oldPasswordInputChange',
+                error: 'Old password is not correct'
+
+            },
         },
         loginError: false,
         isLoginPage: false,
-        userLoggedIn: false
+        userLoggedIn: false,
+        modalOpened: false
         
     }
 
@@ -60,6 +70,18 @@ const withForm = (WrappedComponent) => {
 componentDidMount(){
 this.props.onLogout();
 return this.props.location.pathname=="/login" ? this.setState({isLoginPage: true}) : null;
+}
+
+openModal = (e) => {
+    this.setState({
+        modalOpened: true
+    })
+}
+closeModal = (e) => {
+    this.setState({
+        modalOpened: false
+    })
+    this.props.history.push('/profile');
 }
 
 emailInputChange = (e) => {
@@ -121,6 +143,23 @@ this.setState({
     } 
 })
 }
+oldPasswordInputChange = (e) => {
+    if(this.state.form.email.valid && localStorage.getItem(this.state.form.email.value) ){
+        const emailKey = localStorage.getItem(this.state.form.email.value)
+    const isValid = e.target.value === JSON.parse(emailKey).password.value;
+    this.setState({
+    form: {
+        ...this.state.form,
+        oldPassword: {
+            ...this.state.form.oldPassword,
+            value: e.target.value,
+            valid: isValid
+        }
+    } 
+})
+    }
+    
+}
 
 checkIfFormIsValid = () => {
 let validFields = [];
@@ -128,7 +167,7 @@ for(let field in this.state.form){
     
     validFields.push(this.state.form[field].valid)
   }
-  return validFields.filter(item => !item).length == (this.state.isLoginPage ? 2 : 0) ? true : false;
+  return validFields.filter(item => !item).length == (this.state.isLoginPage ? 3 : 1) ? true : false;
 }
 
 
@@ -136,17 +175,13 @@ registerHandler = (e) => {
 e.preventDefault();
 
 if (this.checkIfFormIsValid()) {
-    // var existing = localStorage.getItem('user');
-    // existing = existing ? JSON.parse(existing) : [];
-    // existing.push({email:this.state.form.email, username:this.state.form.username, password:this.state.form.password});
-    // localStorage.setItem('user', JSON.stringify(existing));
 
     localStorage.setItem(this.state.form.email.value, JSON.stringify(this.state.form));
    
     this.setState(() => ({
         ...this.state,
         form: this.initialState.form,
-        isLoginPage: true
+        isLoginPage: true,
     }))
 
 
@@ -161,7 +196,6 @@ if (this.checkIfFormIsValid()) {
    
    if(user){
     user = JSON.parse(user);
-    console.log(user)
     this.props.onLogin(user);
     this.setState({
         ...this.state,
@@ -180,28 +214,37 @@ if (this.checkIfFormIsValid()) {
         userLoggedIn: false
     })
    }
-//    this.props.history.push('/login');
     
     }
 }
 
-    // componentDidMount(){
-    //   console.log(this.props.user)
-    //   if(!this.props.user){
-    //     this.props.history.push('/login');
-    //   }
-    // }
+editProfileHandler = (e) => {
+    e.preventDefault();
+    localStorage.setItem(this.state.form.email.value, JSON.stringify(this.state.form));
+    this.props.onLogin(this.state.form);
+    this.setState(() => ({
+        ...this.state,
+        userLoggedIn: this.state.form,
+        form: this.initialState.form
+    }))
+    this.openModal();
+    
+}
 
     render() {
       return <WrappedComponent 
+      closeModal={this.closeModal}
       formState={this.state}
       loginHandler={this.loginHandler}
       registerHandler={this.registerHandler}
+      editProfileHandler={this.editProfileHandler}
       checkIfFormIsValid={this.checkIfFormIsValid}
+      oldPasswordInputChange={this.oldPasswordInputChange}
       repeatPasswordInputChange={this.repeatPasswordInputChange}
       passwordInputChange={this.passwordInputChange}
       usernameInputChange={this.usernameInputChange}
       emailInputChange={this.emailInputChange}
+      userLoggedIn={this.userLoggedIn}
       {...this.props} />;
     }
   }
