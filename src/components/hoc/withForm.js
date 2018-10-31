@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as log from '../../store/actions/fetch'; 
+import CryptoJS from 'crypto-js';
 
 
 const withForm = (WrappedComponent) => {
@@ -68,7 +69,7 @@ const withForm = (WrappedComponent) => {
 }
 
 componentDidMount(){
-this.props.onLogout();
+    this.props.location.pathname !== '/profile/edit-profile' && this.props.onLogout();
 return this.props.location.pathname=="/login" ? this.setState({isLoginPage: true}) : null;
 }
 
@@ -145,8 +146,12 @@ this.setState({
 }
 oldPasswordInputChange = (e) => {
     if(this.state.form.email.valid && localStorage.getItem(this.state.form.email.value) ){
-        const emailKey = localStorage.getItem(this.state.form.email.value)
-    const isValid = e.target.value === JSON.parse(emailKey).password.value;
+
+        const data = localStorage.getItem(this.state.form.email.value);
+        let bytes  = CryptoJS.AES.decrypt(data, e.target.value);
+        let decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        const isValid = decryptedData ? true : false;
+    // const isValid = e.target.value === JSON.parse(data).password.value;
     this.setState({
     form: {
         ...this.state.form,
@@ -176,7 +181,8 @@ e.preventDefault();
 
 if (this.checkIfFormIsValid()) {
 
-    localStorage.setItem(this.state.form.email.value, JSON.stringify(this.state.form));
+    let data = CryptoJS.AES.encrypt(JSON.stringify(this.state.form), this.state.form.password.value).toString();
+    localStorage.setItem(this.state.form.email.value, data);
    
     this.setState(() => ({
         ...this.state,
@@ -192,10 +198,13 @@ loginHandler = (e) => {
 e.preventDefault();
 
 if (this.checkIfFormIsValid()) {
-   let user = localStorage.getItem(this.state.form.email.value);
-   
+
+   const data = localStorage.getItem(this.state.form.email.value);
+    let bytes  = CryptoJS.AES.decrypt(data, this.state.form.password.value);
+    let decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    let user = decryptedData;
+
    if(user){
-    user = JSON.parse(user);
     this.props.onLogin(user);
     this.setState({
         ...this.state,
@@ -220,7 +229,9 @@ if (this.checkIfFormIsValid()) {
 
 editProfileHandler = (e) => {
     e.preventDefault();
-    localStorage.setItem(this.state.form.email.value, JSON.stringify(this.state.form));
+    let data = CryptoJS.AES.encrypt(JSON.stringify(this.state.form), this.state.form.password.value).toString();
+    localStorage.setItem(this.state.form.email.value, data);
+
     this.props.onLogin(this.state.form);
     this.setState(() => ({
         ...this.state,
@@ -230,9 +241,16 @@ editProfileHandler = (e) => {
     this.openModal();
     
 }
+setStateForEditProfile = (stateForEdit) => {
+    this.setState({
+        ...this.state,
+        form: stateForEdit
+    })
+}
 
     render() {
       return <WrappedComponent 
+      setStateForEditProfile={this.setStateForEditProfile}
       closeModal={this.closeModal}
       formState={this.state}
       loginHandler={this.loginHandler}

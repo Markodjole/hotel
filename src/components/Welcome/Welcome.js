@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import {Route, Link} from 'react-router-dom';
 import './Welcome.css';
+import CryptoJS from 'crypto-js';
+
 
 const Welcome = () => {
 
    const setAdmin = () => {
     if(!localStorage.getItem('admin@admin.com')){
-        localStorage.setItem('admin@admin.com', '{"email":{"value": "admin@admin.com"},"username":{"value": "admin"}, "password": {"value":"admin"}}')
+        let data = CryptoJS.AES.encrypt('{"email":{"value": "admin@admin.com"},"username":{"value": "admin"}, "password": {"value":"admin"}}', 'admin').toString();
+    localStorage.setItem('admin@admin.com', data);
        }
     }
     setAdmin();

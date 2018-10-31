@@ -36,7 +36,7 @@ class Home extends Component {
             
             
                 {this.props.stories.map(story => {
-                  return  <div>
+                  return  <div key={story.id}>
                       <div key={story.id}>
                             <div><a href={story.url}>{story.title}</a></div>
                             <span>{story.score} points by {story.by}</span> | <span onClick={()=>this.props.onCommentsClick(story.kids)} className="comments">{story.descendants} {story.descendants == 1 ? 'comment' : 'comments'}</span>

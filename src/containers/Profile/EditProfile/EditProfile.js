@@ -5,6 +5,10 @@ import Modal from '../../../components/UI/Modal/Modal';
 
 class EditProfile extends Component {
 
+    componentDidMount(){
+        this.props.setStateForEditProfile(this.props.user)
+    }
+
     checkIfFormIsValid = () => {
         let validFields = [];
         for(let field in this.props.formState.form){

@@ -17,15 +17,15 @@ class Profile extends Component {
         return ( 
             <div className='container'>
                 <div className="welcomeProfile">
-                    <div class="card">
-                        <div class="card-header">
+                    <div className="card">
+                        <div className="card-header">
                             Profile Page
                         </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Username : </h3>
-                            <p class="card-text">Email address : </p>
-                            <Link to='/profile/edit-profile'  class="btn btn-primary">Edit profile</Link><br/><br/>
-                            <Link to='/login'  class="btn btn-primary">Logout</Link>
+                        <div className="card-body">
+                            <h3 className="card-title">Username : </h3>
+                            <p className="card-text">Email address : </p>
+                            <Link to='/profile/edit-profile'  className="btn btn-primary">Edit profile</Link><br/><br/>
+                            <Link to='/login'  className="btn btn-primary">Logout</Link>
                         </div>
                     </div>
                 </div>
