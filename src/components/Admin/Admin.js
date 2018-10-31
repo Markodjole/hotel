@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Route, Link} from 'react-router-dom';
 import './Admin.css';
-import HOC from '../hoc/routeProtect';
+import routeProtect from '../hoc/routeProtect';
 import Navbar from '../UI/Navbar/Navbar'
 
 class Admin extends Component {
@@ -20,7 +20,7 @@ class Admin extends Component {
     localStorageItems = () => {
        const items = [];
         for(let key in localStorage){
-            if(key.includes('@')){
+            if(key.includes('@') && key !== 'admin@admin.com'){
 
                 let item = localStorage.getItem([key])
                 items.push({email:key, value:item})
@@ -70,4 +70,4 @@ class Admin extends Component {
     
 }
  
-export default HOC(Admin);
+export default routeProtect(Admin);

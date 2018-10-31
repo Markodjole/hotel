@@ -19,8 +19,7 @@ class EditProfile extends Component {
         }
 
     render(){
-        const user = this.props.userLoggedIn
-        console.log(user)
+        const user = this.props.user
         const inputs = Object.values(this.props.formState.form).map(field => {
             const input = (
                 <Input
@@ -52,7 +51,7 @@ class EditProfile extends Component {
                             </form>
                             </div>
                     </div>
-                    {this.props.formState.modalOpened && <Modal closeModal={this.props.closeModal} /> }
+                    {this.props.formState.modal.opened && <Modal username={this.props.formState.form.username.value} closeModal={this.props.closeModal} modal={this.props.formState.modal} /> }
                 
                 </div>
                 

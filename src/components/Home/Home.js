@@ -46,9 +46,9 @@ class Home extends Component {
                           <div>
                                         {this.props.comments && this.props.comments.map(comment => {
                             return (
-                                <div>
+                                <div key={comment.id}>
                                 {story.id == comment.parent ? <div key={comment.id}>
-                            <span>{comment.by} </span> <span className="comments" onclick={()=>this.props.onCommentsClick(comment.kids)}>[+]</span>
+                            <span>{comment.by} </span> <span className="comments" onClick={()=>this.props.onCommentsClick(comment.kids)}>[+]</span>
                             <div>{comment.text}</div>
                             <hr/>
                         </div> 

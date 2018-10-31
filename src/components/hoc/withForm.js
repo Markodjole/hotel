@@ -60,7 +60,10 @@ const withForm = (WrappedComponent) => {
         loginError: false,
         isLoginPage: false,
         userLoggedIn: false,
-        modalOpened: false
+        modal: {
+            opened: false,
+            message: null 
+        }
         
     }
 
@@ -69,18 +72,25 @@ const withForm = (WrappedComponent) => {
 }
 
 componentDidMount(){
-    this.props.location.pathname !== '/profile/edit-profile' && this.props.onLogout();
+    this.props.location.pathname !==  '/profile/edit-profile' && this.props.onLogout();
 return this.props.location.pathname=="/login" ? this.setState({isLoginPage: true}) : null;
 }
 
-openModal = (e) => {
+openModal = (message) => {
     this.setState({
-        modalOpened: true
+        modal: {
+            ...this.state.modal,
+            message: message,
+            opened: true, 
+        }
     })
 }
 closeModal = (e) => {
     this.setState({
-        modalOpened: false
+        modal: {
+            ...this.state.modal,
+            opened: false, 
+        }
     })
     this.props.history.push('/profile');
 }
@@ -147,10 +157,12 @@ this.setState({
 oldPasswordInputChange = (e) => {
     if(this.state.form.email.valid && localStorage.getItem(this.state.form.email.value) ){
 
-        const data = localStorage.getItem(this.state.form.email.value);
-        let bytes  = CryptoJS.AES.decrypt(data, e.target.value);
-        let decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-        const isValid = decryptedData ? true : false;
+        // const data = localStorage.getItem(this.state.form.email.value);
+        // let bytes  = CryptoJS.AES.decrypt(data, e.target.value);
+        // let decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8)) !== undefined ? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)) : null;
+        // console.log(decryptedData)
+        // const isValid = decryptedData ? true : false;
+        // const isValid = true ;
     // const isValid = e.target.value === JSON.parse(data).password.value;
     this.setState({
     form: {
@@ -158,7 +170,7 @@ oldPasswordInputChange = (e) => {
         oldPassword: {
             ...this.state.form.oldPassword,
             value: e.target.value,
-            valid: isValid
+            valid: true
         }
     } 
 })
@@ -229,22 +241,33 @@ if (this.checkIfFormIsValid()) {
 
 editProfileHandler = (e) => {
     e.preventDefault();
-    let data = CryptoJS.AES.encrypt(JSON.stringify(this.state.form), this.state.form.password.value).toString();
-    localStorage.setItem(this.state.form.email.value, data);
-
-    this.props.onLogin(this.state.form);
-    this.setState(() => ({
-        ...this.state,
-        userLoggedIn: this.state.form,
-        form: this.initialState.form
-    }))
-    this.openModal();
+    if(this.state.form.oldPassword.value == this.props.user.password.value){
+        
+        let data = CryptoJS.AES.encrypt(JSON.stringify(this.state.form), this.state.form.password.value).toString();
+        localStorage.setItem(this.state.form.email.value, data);
+    
+        this.props.onLogin(this.state.form);
+        this.setState(() => ({
+            ...this.state,
+            userLoggedIn: this.state.form,
+            form: this.initialState.form
+        }))
+        this.openModal('You changed your profile');
+        return
+    }
+    this.openModal('Wrong credentials in "Old password" field');
     
 }
 setStateForEditProfile = (stateForEdit) => {
     this.setState({
         ...this.state,
-        form: stateForEdit
+        form: {
+            ...stateForEdit,
+            oldPassword: {
+                ...stateForEdit.oldPassword,
+                value: ''
+            }
+        }
     })
 }
 
